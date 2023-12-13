@@ -1,0 +1,31 @@
+version: "3.3"
+
+services:
+
+  flask:
+    build: ./backend
+    container_name: backend
+    restart: always
+    environment:
+      - APP_NAME=MyFlaskApp
+    expose:
+      - 8080
+    volumes:
+      - ./backend:/backend  # 掛載backend目錄到容器的/app
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports: 
+      - "80:80"
+  ngrok:
+    image: wernight/ngrok:latest
+    depends_on:
+      - nginx
+    ports:
+      - "4040:4040"
+    environment:
+      NGROK_PROTOCOL: tcp
+      NGROK_PORT: nginx:80
+      NGROK_AUTH: 2VbvWV6zArb8OS9YGLUSSVG13Ke_BxBvfF8kM8Ca2sBSrBSz
